@@ -18,7 +18,7 @@ npm run dev
 
 A aplicação web fica em `http://localhost:5173` e a API em `http://localhost:4000`.
 
-Para gerar a versão de produção do frontend:
+Para gerar a versão de produção do frontend faça:
 
 ```bash
 npm run build
