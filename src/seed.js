@@ -1,0 +1,10 @@
+import 'dotenv/config';
+import mongoose from 'mongoose';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { seedDatabase } from './seed-data.js';
+const mongo = await MongoMemoryServer.create();
+await mongoose.connect(mongo.getUri(), { dbName: 'viva-amazonia' });
+await seedDatabase();
+console.log('Dados de demonstração criados. Para o ambiente em memória, execute npm run dev; os dados do seed são carregados automaticamente.');
+await mongoose.disconnect();
+await mongo.stop();

@@ -1,0 +1,144 @@
+openapi: 3.0.3
+info:
+  title: Viva Amazônia API
+  version: 1.0.0
+  description: API REST para ofertas e reservas de passeios em Manaus e Presidente Figueiredo.
+servers:
+  - url: http://localhost:4000
+tags:
+  - name: Saúde
+  - name: Autenticação
+  - name: Passeios
+  - name: Reservas
+paths:
+  /health:
+    get:
+      tags: [Saúde]
+      summary: Verifica a disponibilidade da API
+      responses:
+        '200': { description: API ativa }
+  /api/auth/register:
+    post:
+      tags: [Autenticação]
+      summary: Cria uma conta de turista
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name: { type: string }
+                email: { type: string, format: email }
+                password: { type: string, minLength: 6 }
+      responses:
+        '201': { description: Conta criada e token emitido }
+        '400': { description: Dados inválidos }
+        '409': { description: E-mail já cadastrado }
+  /api/auth/login:
+    post:
+      tags: [Autenticação]
+      summary: Autentica um usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+      responses:
+        '200': { description: Login realizado }
+        '401': { description: Credenciais inválidas }
+  /api/tours:
+    get:
+      tags: [Passeios]
+      summary: Lista passeios ativos e futuros
+      parameters:
+        - in: query
+          name: city
+          schema: { type: string, enum: [Manaus, Presidente Figueiredo] }
+        - in: query
+          name: category
+          schema: { type: string }
+      responses:
+        '200':
+          description: Lista de passeios
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Tour' }
+  /api/tours/{id}:
+    get:
+      tags: [Passeios]
+      summary: Consulta um passeio
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Passeio encontrado }
+        '404': { description: Passeio não encontrado }
+  /api/bookings/mine:
+    get:
+      tags: [Reservas]
+      summary: Lista as reservas do usuário autenticado
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Reservas do usuário }
+        '401': { description: Não autenticado }
+  /api/bookings/checkout:
+    post:
+      tags: [Reservas]
+      summary: Valida vagas e confirma os itens do carrinho
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items]
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [tourId, quantity]
+                    properties:
+                      tourId: { type: string }
+                      quantity: { type: integer, minimum: 1, maximum: 20 }
+      responses:
+        '201': { description: Reservas confirmadas e vagas decrementadas }
+        '400': { description: Carrinho vazio ou quantidade inválida }
+        '401': { description: Não autenticado }
+        '409': { description: Passeio indisponível ou vagas insuficientes }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Tour:
+      type: object
+      properties:
+        _id: { type: string }
+        name: { type: string }
+        description: { type: string }
+        location: { type: string }
+        city: { type: string }
+        category: { type: string }
+        price: { type: number }
+        originalPrice: { type: number, nullable: true }
+        date: { type: string, format: date-time }
+        availableSpots: { type: integer }
+        provider:
+          type: object
+          properties:
+            name: { type: string }

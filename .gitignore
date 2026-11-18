@@ -1,0 +1,24 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+build/
+coverage/
+
+# Variáveis de ambiente
+.env
+.env.*
+
+!.env.example
+
+# IDE e ferramentas
+.vscode/
+.idea/
+.claude/
+.copilot/
+.local/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
