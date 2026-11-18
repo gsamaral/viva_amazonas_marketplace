@@ -57,7 +57,7 @@ function App() {
 
   return <div className="app">
     <header className="topbar"><a className="brand" href="#"><span className="brand-mark"><Leaf size={21}/></span><span>viva<span className="brand-light">amazônia</span></span></a>
-      <nav className={menuOpen ? 'nav open' : 'nav'}><a href="#passeios" onClick={() => setMenuOpen(false)}>Explorar passeios</a><a href="#destinos" onClick={() => setMenuOpen(false)}>Destinos</a><a href="/api-docs" target="_blank">API</a></nav>
+      <nav className={menuOpen ? 'nav open' : 'nav'}><a href="#passeios" onClick={() => setMenuOpen(false)}>Explorar passeios</a><a href="#destinos" onClick={() => setMenuOpen(false)}>Destinos</a></nav>
       <div className="header-actions"><button className="cart-button" onClick={() => setModal('cart')}><ShoppingBag size={18}/><span>Carrinho</span>{count > 0 && <b>{count}</b>}</button>{user ? <button className="user-pill" onClick={logout}>{user.name.split(' ')[0]} · Sair</button> : <button className="login-link" onClick={() => setModal('login')}>Entrar</button>}<button className="mobile-menu" onClick={() => setMenuOpen(!menuOpen)}><Menu/></button></div>
     </header>
 
