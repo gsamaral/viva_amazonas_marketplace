@@ -74,6 +74,15 @@ Os usuários e passeios de demonstração são inseridos automaticamente na inic
 - `GET /api/bookings/mine` — requer `Authorization: Bearer <token>`
 - `POST /api/bookings/checkout` — requer `Authorization: Bearer <token>`
 
+## Testes
+
+Consulte as pastas de testes para planejar, implementar e registrar as validações:
+
+- [Planejamento e execução](docs/testes/planejamento-execucao/README.md) — planos, cenários e relatórios.
+- [Testes de API](tests/api/README.md) — testes dos endpoints e contratos.
+- [Testes end-to-end](tests/e2e/README.md) — fluxos completos pela interface.
+- [Testes de performance](tests/performance/README.md) — carga, tempo de resposta e concorrência.
+
 ## Git e Pull Request
 
 O projeto está preparado para versionamento Git. Para iniciar o histórico local:
@@ -101,5 +110,5 @@ Depois, abra o Pull Request da branch `feat/tourism-marketplace` para `main` na 
 - Não há integração com gateway de pagamento; o checkout confirma a reserva diretamente.
 - Não há painel administrativo para cadastro/edição de passeios.
 - O banco em memória perde os dados ao reiniciar.
-- Não foram criados testes automatizados, conforme solicitado.
+- Ainda não foram implementados testes automatizados.
 - Antes de produção, configurar segredo JWT forte, HTTPS, banco persistente, rate limiting, validação de entrada, logs e política de privacidade.
