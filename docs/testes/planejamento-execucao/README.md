@@ -14,7 +14,6 @@ dos testes do marketplace Viva Amazônia.
 
 | Documento | Conteúdo |
 | --- | --- |
-| [Plano_e_Estrategia_de_Testes_Adaptada.docx](Plano_e_Estrategia_de_Testes_Adaptada.docx) | Plano adaptado ao projeto, com escopo, estratégia e critérios de qualidade. |
 | [Plano_Estrategia_e_Automacao_Web_API_Revisado.docx](Plano_Estrategia_e_Automacao_Web_API_Revisado.docx) | Plano revisado para automação de testes Web e API. |
 
 ## Estratégia geral
