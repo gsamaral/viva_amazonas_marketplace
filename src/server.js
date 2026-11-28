@@ -6,7 +6,7 @@ import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import swaggerUi from 'swagger-ui-express';
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import authRoutes from './routes/auth.js';
 import tourRoutes from './routes/tours.js';
 import bookingRoutes from './routes/bookings.js';
@@ -33,21 +33,33 @@ app.use((err, _req, res, _next) => {
   res.status(err.status || 500).json({ message: err.message || 'Erro interno do servidor' });
 });
 
-const PORT = process.env.PORT || 4000;
-let mongoServer;
-try {
-  mongoServer = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
+export { app };
+
+export async function startServer() {
+  const PORT = process.env.PORT || 4000;
+  const mongoServer = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
   await mongoose.connect(mongoServer.getUri(), { dbName: 'viva-amazonia' });
   await seedDatabase();
-  app.listen(PORT, () => console.log(`API: http://localhost:${PORT} | Swagger: http://localhost:${PORT}/api-docs`));
-} catch (error) {
-  console.error('Falha ao iniciar API/banco em memória:', error);
-  process.exit(1);
+
+  const server = app.listen(PORT, () =>
+    console.log(`API: http://localhost:${PORT} | Swagger: http://localhost:${PORT}/api-docs`)
+  );
+
+  const shutdown = async () => {
+    await mongoose.disconnect();
+    await mongoServer.stop();
+    server.close();
+  };
+
+  process.once('SIGINT', shutdown);
+  process.once('SIGTERM', shutdown);
+  return { server, mongoServer };
 }
-const shutdown = async () => {
-  await mongoose.disconnect();
-  if (mongoServer) await mongoServer.stop();
-  process.exit(0);
-};
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
+
+const isMainModule = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMainModule) {
+  startServer().catch(error => {
+    console.error('Falha ao iniciar API/banco em memória:', error);
+    process.exit(1);
+  });
+}
