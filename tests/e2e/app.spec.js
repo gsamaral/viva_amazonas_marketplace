@@ -1,9 +1,19 @@
 import { test, expect } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
+  const toursResponse = page.waitForResponse(
+    response => response.url().includes('/api/tours') && response.ok(),
+    { timeout: 60_000 }
+  );
   await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await toursResponse;
   await page.evaluate(() => localStorage.clear());
+  const reloadToursResponse = page.waitForResponse(
+    response => response.url().includes('/api/tours') && response.ok(),
+    { timeout: 60_000 }
+  );
   await page.reload({ waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await reloadToursResponse;
 });
 
 test('exibe os passeios em destaque', async ({ page }) => {
