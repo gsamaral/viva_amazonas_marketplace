@@ -11,6 +11,8 @@
     "build": "vite build",
     "test:api": "vitest run tests/api/api.test.js",
     "test:e2e": "playwright test",
+    "test:performance:catalog": "k6 run tests/performance/catalog-load.js",
+    "test:performance:stress": "k6 run tests/performance/city-filter-stress.js",
     "git:init": "git init"
   },
   "dependencies": {
